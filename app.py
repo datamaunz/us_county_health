@@ -99,7 +99,7 @@ def main():
     st.set_page_config(
     layout="wide",
     page_title="County Analysis",
-    #page_icon = "assets/images/principia_logo.png"
+    page_icon = "💚"
     )
     
     df, facilities_1_df, state_names, facilitiy_sectors, counties = read_in_datafiles()
@@ -107,8 +107,15 @@ def main():
     filtered_df, filtered_facility_df, filtered_reduced_df = obtain_filtered_dataframes(df, selected_states, facilities_1_df, selected_sectors, number_of_counties, best_or_worst)
     
     
-    
-    st.markdown(f"### You're looking at the {len(filtered_reduced_df)} {best_or_worst} counties out of {len(filtered_df)} ({round(len(filtered_reduced_df) / len(filtered_df) *100)}%)")
+    title = f"### You're looking at the {len(filtered_reduced_df)} {best_or_worst} counties out of {len(filtered_df)} ({round(len(filtered_reduced_df) / len(filtered_df) *100)}%)"
+    explainer_text = f'This app is meant to compare counties in the US by cancer incidence rates. The reported rates show age adjusted cases per 100,000 inhabitants. The data is taken from the [National Cancer Institute](https://statecancerprofiles.cancer.gov/map/map.noimage.php) showing sites between 2014-2018.\
+        Since cancer rates seem to be a proxy for pollution, the sidebar provides the option to display industrial facilities on the map.\
+            At the moment, only those facilities are available that report their emissions anually to the EPA. Mining is not yet included.'
+            
+
+    st.markdown(title)
+    st.markdown(explainer_text)
+    st.markdown("---")
     
     
     filtered_reduced_df['quantiles'], bins = pd.qcut(filtered_reduced_df["incidence_rate"], q=10, retbins=True, labels=range(1,11))
