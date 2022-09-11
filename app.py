@@ -115,7 +115,7 @@ def main():
 
     st.markdown(title)
     st.markdown(explainer_text)
-    st.markdown("---")
+    
     
     
     filtered_reduced_df['quantiles'], bins = pd.qcut(filtered_reduced_df["incidence_rate"], q=10, retbins=True, labels=range(1,11))
@@ -126,41 +126,43 @@ def main():
     #quantiles = pd.qcut(filtered_reduced_df["incidence_rate"], q=10, retbins=False)
     #filtered_reduced_df["labels"] = labels
     
+    tab1, tab2 = st.tabs(["Map", "Table"])
     
-    fig = px.choropleth(filtered_reduced_df, 
-                        geojson = counties, 
-                        locations='FIPS', 
-                        #color='incidence_rate',
-                        color='quantiles',
-                        #color='bin',
-                        color_continuous_scale="rdylgn_r",
-                        hover_data=["County", "State", "Recent Trend", "incidence_rate"],
-                        scope="usa",
-                        category_orders = legend_dict
-                        #labels = legend_dict,
-                        #labels={'incidence_rate':'incidence rate'}
-                        )
-    fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        margin={"r":0,"t":0,"l":0,"b":0},
+    with tab1: 
+        fig = px.choropleth(filtered_reduced_df, 
+                            geojson = counties, 
+                            locations='FIPS', 
+                            #color='incidence_rate',
+                            color='quantiles',
+                            #color='bin',
+                            color_continuous_scale="rdylgn_r",
+                            hover_data=["County", "State", "Recent Trend", "incidence_rate"],
+                            scope="usa",
+                            category_orders = legend_dict
+                            #labels = legend_dict,
+                            #labels={'incidence_rate':'incidence rate'}
+                            )
+        fig.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            margin={"r":0,"t":0,"l":0,"b":0},
+            
+            )
         
-        )
-    
-    if show_facilities == True:
-    
-        fig2 = px.scatter_geo(filtered_facility_df[filtered_facility_df.State.str.contains("|".join(selected_states))], lat="Latitude", lon="Longitude", locationmode="ISO-3", hover_data=["Industry Type (sectors)", "Facility Name", "Total reported direct emissions", "emission_types"]) # , symbol="Industry Type (sectors)"
-        fig.add_trace(fig2.data[0])
-    
-    #fig = plot_county_level_map(filtered_reduced_df, counties)
-    st.plotly_chart(fig, use_container_width=True)
-    
-    quantile_legend_df = pd.DataFrame(legend_dict, index=["rates"])
-    st.write(quantile_legend_df)
+        if show_facilities == True:
+        
+            fig2 = px.scatter_geo(filtered_facility_df[filtered_facility_df.State.str.contains("|".join(selected_states))], lat="Latitude", lon="Longitude", locationmode="ISO-3", hover_data=["Industry Type (sectors)", "Facility Name", "Total reported direct emissions", "emission_types"]) # , symbol="Industry Type (sectors)"
+            fig.add_trace(fig2.data[0])
+        
+        #fig = plot_county_level_map(filtered_reduced_df, counties)
+        st.plotly_chart(fig, use_container_width=True)
+        
+        quantile_legend_df = pd.DataFrame(legend_dict, index=["rates"])
+        st.write(quantile_legend_df)
     
     
     
-    with st.expander("Table view"):
+    with tab2:
         st.dataframe(filtered_reduced_df)
     
     
