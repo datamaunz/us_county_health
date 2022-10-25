@@ -1,3 +1,17 @@
 venv/
 
 .env
+
+*ipynb
+
+test_data/
+ignoredFiles/
+
+chromedriver
+
+app_.py
+app_first_version.py
+app_pydeck_2.py
+app_pydeck.py
+
+.DS_Store
